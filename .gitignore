@@ -1,0 +1,13 @@
+# ignore useless latex file
+*.log
+*.out
+*.aux
+*.bak
+*.blg
+*.bbl
+*.gz
+
+Challenge/__MACOSX/*
+*.DS_Store
+/solution/venv1/*
+.idea/
