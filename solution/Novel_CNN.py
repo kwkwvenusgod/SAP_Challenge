@@ -6,11 +6,10 @@ from keras.constraints import maxnorm
 from keras.optimizers import Adamax
 from keras.layers.convolutional import Convolution2D
 from keras.layers.convolutional import MaxPooling2D
-from keras.callbacks import EarlyStopping
 
 
-class novelcnn:
-    def __init__(self,input_size, n_classes, batch_size = 32, epochs = 20):
+class NovelCnn:
+    def __init__(self,input_size, n_classes,raw_feature_dim, batch_size=16, epochs=15):
         self._model = None
         self._batch_size = batch_size
         self._epochs = epochs
@@ -22,7 +21,7 @@ class novelcnn:
 
         model = Sequential()
         model.add(Convolution2D(
-            NB_FILTER[0], nb_char, NB_GRAM[0],
+            NB_FILTER[0], kernel_size=(raw_feature_dim, NB_GRAM[0]),
             input_shape=input_size, border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
         model.add(Convolution2D(
@@ -40,7 +39,7 @@ class novelcnn:
             border_mode='valid', activation='relu'))
         model.add(Convolution2D(
             NB_FILTER[1], 1, NB_GRAM[2],
-            border_mode='valid', activation='relu')
+            border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
         model.add(Flatten())
         model.add(Dropout(DROPOUT[0]))
@@ -53,17 +52,18 @@ class novelcnn:
 
         model.compile(
             loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])
+
         self._model = model
 
-    def fit(self, Xtrain, Ytrain):
-        self._model.fit(Xtrain,Ytrain,self._batch_size,self._epochs,verbose=1)
+    def fit(self, xtrain, ytrain):
+        self._model.fit(xtrain,ytrain,self._batch_size,self._epochs,verbose=1)
 
-    def predict(self,Xtest):
-        Ytest = self._model.predict_on_batch(Xtest)
-        return Ytest
+    def predict(self, xvalidate):
+        ytest = self._model.predict_on_batch(xvalidate)
+        return ytest
 
-
-
+    def evaluation(self, xtest, ytest):
+        return self._model.evaluate(xtest,ytest)
 
 
 

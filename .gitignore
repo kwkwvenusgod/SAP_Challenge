@@ -6,6 +6,7 @@
 *.blg
 *.bbl
 *.gz
+*.pyc
 
 Challenge/__MACOSX/*
 *.DS_Store
