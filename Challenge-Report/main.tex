@@ -17,13 +17,20 @@
 
 The fancy title of SAP Challenge is \emph{Which Novel Do I Belong To?}. Translating the title into machine learning language is classifying the documents into correct categories (text classification). There are quite a mount of classification algorithms which can be applied to solve this issue, e.g. KNN, Logistic regression (For multiple classes, it is preferred as SoftMax), decision tree, linear discriminant analysis, SVM, etc. Those approaches can be regarded as linear approach which assumes the data is linear separable. But if kernel trick is preferred, that is another kind of story. The assumption is that those data is not linear separable that no appropriate hyperplane can be learnt using the above approaches, so kernel trick would seek for another feature space which can linearize the feature from the original feature space to make the problem linear separable again. But in this task, I would like to adopt nowadays fashion approach Convolutional Neural Network aka. \emph{CNN}. In this task, I would like to tackle the different layers: convolutional layers, rectifier linear unit(ReLU) layers, pooling layers, fully connected layers, etc and manipulate the learnable parameters for example to try how many filters is suitable for each convolutional layers to seek a good CNN structure which can well solve classification problem.
 
-In the \emph{Which Novel Do I Belong To?}, there is another critical issue in feature extraction. The representation of each text is not natural English word so it is not possible to apply any pretrained word embedding as feature directly. But it is said "each character has a deterministic mapping", so each character is not random and it has its own semantic meaning. Before I build the CNN deep learning algorithm, I would like to train the character level embedding using some word embedding algorithms.
+In the \emph{Which Novel Do I Belong To?}, there is another critical issue in feature extraction. The representation of each text is not natural English word since they have been encrypted so it is not possible to apply any pretrained word embedding as feature directly as other typical text classification problem. But it is said "each character has a deterministic mapping" which means each word e.g. "boy" could always be mapped as "sua", so character level feature extraction can be suitable for this task. X. Zhang \cite{ZhangZL15} applied one-hot to encode each char in a char table as basic feature.
 
-In section\ref{algoDetail}, the detail of the algorithms is described. In section\ref{exp}, experiments and analysis are explained. In section\ref{conclusion}, conclusion is summarized. 
+In section\ref{algoDetail}, the detail of the algorithms is described. In section\ref{exp}, experiments and analysis are explained. In section\ref{conclusion}, conclusion is summarized.
 
 \section{Algorithm Detail}\label{algoDetail}
 
 \subsection{Feature Extraction}
+In this task, I applied one-hot feature extraction method to encode char in char dictionary:
+\begin{equation}
+D = \{'a': \mathbf{a},'b': \mathbf{b},'c': \mathbf{c},'d': \mathbf{d}....\}
+\end{equation}
+For this task, the char dictionary will contain only 26 alphabet characters, so the feature vector is $R^{26 \times 1}$. Each feature matrix of each article will be $R^{26 \times n}$ where $n$ is the article length.
+
+This feature extraction would make since each word including spaces or other will deterministically be mapped to another aphetic space 
 
 \subsection{CNN architecture}
 
