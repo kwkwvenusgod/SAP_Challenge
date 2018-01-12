@@ -9,7 +9,7 @@ from keras.layers.convolutional import MaxPooling2D
 
 
 class NovelCnn:
-    def __init__(self,input_size, n_classes,raw_feature_dim, batch_size=16, epochs=30):
+    def __init__(self,input_size, n_classes,raw_feature_dim, batch_size=16, epochs=60):
         self._model = None
         self._batch_size = batch_size
         self._epochs = epochs
