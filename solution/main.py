@@ -63,8 +63,7 @@ if __name__ == "__main__":
     print(eval_result)
 
     model_name_path = 'myNovelCNN.pickle'
-    with open(model_name_path, 'wb') as model_file:
-        pickle.dump(nc, model_file, protocol=pickle.HIGHEST_PROTOCOL)
+    nc.save_model(model_name_path)
 
     ytrain_pred = nc.predict(x[train_seq])
     train_confusion = confusion_matrix(y[train_seq], ytrain_pred)

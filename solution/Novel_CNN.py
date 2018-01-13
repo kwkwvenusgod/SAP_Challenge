@@ -17,19 +17,14 @@ class NovelCnn:
         NB_FILTER = [64, 128]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
-        DROPOUT = [0.7, 0.7]
+        DROPOUT = [0.3, 0.3]
 
         model = Sequential()
-        # input kernel shape change from (raw_feature_dim, NB_GRAM[0]) to (raw_feature_dim/2, NB_GRAM[0])
+
         model.add(Conv2D(
             NB_FILTER[0], (raw_feature_dim, NB_GRAM[0]),
             input_shape=input_size, border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1,3)))
-
-        # add another c-layer and maxpooling kernel size is (1, NB_GRAM[0]); pool size is pool_size=(1, 3)
-        model.add(Conv2D(
-            NB_FILTER[0], (1, NB_GRAM[0]),
-            input_shape=input_size, border_mode='valid', activation='relu'))
 
         model.add(Conv2D(
             NB_FILTER[0], (1, NB_GRAM[0]),
@@ -77,6 +72,9 @@ class NovelCnn:
 
     def evaluation(self, xtest, ytest):
         return self._model.evaluate(xtest,ytest)
+
+    def save_model(self, savepath):
+        self._model.save()
 
 
 
