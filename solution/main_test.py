@@ -71,7 +71,7 @@ if __name__ == "__main__":
     print(train_confusion)
 
     ytest_pred = nc.predict(x[test_seq])
-    test_confusion = confusion_matrix(y[test_seq],ytest_pred)
+    test_confusion = confusion_matrix(np_utils.y[test_seq],ytest_pred)
     print(test_confusion)
 
     # plot confusion matrix

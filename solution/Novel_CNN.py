@@ -11,7 +11,7 @@ from keras.layers.convolutional import MaxPooling2D
 
 
 class NovelCnn:
-    def __init__(self,input_size=None, n_classes=None,raw_feature_dim=None, batch_size=8, epochs=45):
+    def __init__(self,input_size=None, n_classes=None,raw_feature_dim=None, batch_size=16, epochs=45):
         self._model = None
         self._batch_size = batch_size
         self._epochs = epochs
@@ -38,9 +38,9 @@ class NovelCnn:
             input_shape=input_size, border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
 
-        model.add(Conv2D(
-            NB_FILTER[0], (1, NB_GRAM[2]),
-            border_mode='valid', activation='relu'))
+        # model.add(Conv2D(
+        #     NB_FILTER[0], (1, NB_GRAM[2]),
+        #     border_mode='valid', activation='relu'))
         model.add(Conv2D(
             NB_FILTER[1], (1, NB_GRAM[2]),
             border_mode='valid', activation='relu'))
@@ -69,7 +69,7 @@ class NovelCnn:
         self._model.fit(xtrain,ytrain,self._batch_size,self._epochs,verbose=1)
 
     def predict(self, xvalidate):
-        ytest = self._model.predict_on_batch(xvalidate)
+        ytest = self._model.predict(xvalidate)
         return ytest
 
     def evaluation(self, xtest, ytest):
