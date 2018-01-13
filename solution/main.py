@@ -63,7 +63,7 @@ if __name__ == "__main__":
     print(eval_result)
 
     model_name_path = 'myNovelCNN.pickle'
-    nc.save_model(model_name_path)
+    nc.save_ncnn_model(model_name_path)
 
     ytrain_pred = nc.predict(x[train_seq])
     train_confusion = confusion_matrix(y[train_seq], ytrain_pred)

@@ -1,4 +1,6 @@
 from keras.models import Sequential
+from keras.models import save_model
+from keras.models import load_model
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import Flatten
@@ -9,7 +11,7 @@ from keras.layers.convolutional import MaxPooling2D
 
 
 class NovelCnn:
-    def __init__(self,input_size, n_classes,raw_feature_dim, batch_size=8, epochs=30):
+    def __init__(self,input_size, n_classes,raw_feature_dim, batch_size=16, epochs=30):
         self._model = None
         self._batch_size = batch_size
         self._epochs = epochs
@@ -17,7 +19,7 @@ class NovelCnn:
         NB_FILTER = [64, 128]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
-        DROPOUT = [0.3, 0.3]
+        DROPOUT = [0.4, 0.4]
 
         model = Sequential()
 
@@ -73,8 +75,11 @@ class NovelCnn:
     def evaluation(self, xtest, ytest):
         return self._model.evaluate(xtest,ytest)
 
-    def save_model(self, savepath):
-        self._model.save(savepath)
+    def save_ncnn_model(self, savepath):
+        save_model(self._model, savepath)
+
+    def load_ncnn_model(self, modelpath):
+        self._model = load_model(modelpath)
 
 
 
