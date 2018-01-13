@@ -30,7 +30,6 @@ class NovelCnn:
         model.add(Conv2D(
             NB_FILTER[0], (1, NB_GRAM[0]),
             input_shape=input_size, border_mode='valid', activation='relu'))
-        model.add(MaxPooling2D(pool_size=(1, 3)))
 
         model.add(Conv2D(
             NB_FILTER[0], (1, NB_GRAM[0]),
@@ -39,7 +38,7 @@ class NovelCnn:
 
         model.add(Conv2D(
             NB_FILTER[0], (1, NB_GRAM[1]),
-            border_mode='valid', activation='relu'))
+            input_shape=input_size, border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
 
         model.add(Conv2D(
