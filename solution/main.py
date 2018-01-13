@@ -55,7 +55,7 @@ if __name__ == "__main__":
         label_data = read_label(label_file)
     y = label_data
 
-    train_seq, test_seq = data_set_split(x.shape[0], 0.1)
+    train_seq, test_seq = data_set_split(x.shape[0], 0.2)
     n_classes = y.shape[1]
     nc = NC(input_size=raw_data_size,n_classes=n_classes,raw_feature_dim=raw_feature_dim)
     nc.fit(x[train_seq], y[train_seq])
@@ -63,6 +63,7 @@ if __name__ == "__main__":
     print(eval_result)
 
     model_name_path = 'myNovelCNN.pickle'
+    print("saving model...")
     nc.save_ncnn_model(model_name_path)
 
     ytrain_pred = nc.predict(x[train_seq])
