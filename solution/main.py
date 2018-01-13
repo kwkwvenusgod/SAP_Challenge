@@ -3,6 +3,7 @@ import Build_Char_One_Hot_Dic
 import PrepareData
 import pickle
 import numpy as np
+import matplotlib.pyplot as plt
 from Novel_CNN import NovelCnn as NC
 from pathlib import Path
 from keras.utils import np_utils
@@ -59,10 +60,11 @@ if __name__ == "__main__":
     nc = NC(input_size=raw_data_size,n_classes=n_classes,raw_feature_dim=raw_feature_dim)
     nc.fit(x[train_seq], y[train_seq])
     eval_result = nc.evaluation(x[test_seq],y[test_seq])
+    print(eval_result)
 
     model_name_path = 'myNovelCNN.pickle'
-    with open(model_name_path, 'w') as model_file:
-        pickle.dump(nc, model_file)
+    with open(model_name_path, 'wb') as model_file:
+        pickle.dump(nc, model_file, protocol=pickle.HIGHEST_PROTOCOL)
 
     ytrain_pred = nc.predict(x[train_seq])
     train_confusion = confusion_matrix(y[train_seq], ytrain_pred)
@@ -71,6 +73,33 @@ if __name__ == "__main__":
     ytest_pred = nc.predict(x[test_seq])
     test_confusion = confusion_matrix(y[test_seq],ytest_pred)
     print(test_confusion)
+
+    # plot confusion matrix
+    label_dict_path = "label_dict.json"
+    with open(label_dict_path,'r') as label_dict_file:
+        label_dict = js.load(label_dict_file)
+    categories = label_dict.keys()
+
+    figure = plt.figure()
+    plt.clf()
+
+    train_figure = figure.add_subplot(1,2,1)
+    train_figure.set_yticks(categories)
+    train_figure.imshow(train_confusion, cmap=plt.cm.jet,
+              interpolation='nearest')
+
+    train_figure = figure.add_subplot(1,2,2)
+    train_figure.set_yticks(categories)
+    train_figure.imshow(train_confusion, cmap=plt.cm.jet,
+                        interpolation='nearest')
+    plt.savefig("res.eps", format="eps")
+
+
+
+
+
+
+
 
 
 
