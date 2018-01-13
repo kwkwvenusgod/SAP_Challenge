@@ -8,7 +8,7 @@ from keras.utils import np_utils
 
 
 def read_raw_data(_file):
-    content = _file.readlines();
+    content = _file.readlines()
     content = [x.rstrip('\n') for x in content]
     raw_data_list = [list(x) for x in content]
     return raw_data_list

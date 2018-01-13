@@ -4,7 +4,7 @@ from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.constraints import maxnorm
 from keras.optimizers import Adamax
-from keras.layers.convolutional import Convolution2D
+from keras.layers.convolutional import Conv2D
 from keras.layers.convolutional import MaxPooling2D
 
 
@@ -20,25 +20,25 @@ class NovelCnn:
         DROPOUT = [0.7, 0.7]
 
         model = Sequential()
-        model.add(Convolution2D(
-            NB_FILTER[0], kernel_size=(raw_feature_dim, NB_GRAM[0]),
+        model.add(Conv2D(
+            NB_FILTER[0], (raw_feature_dim, NB_GRAM[0]),
             input_shape=input_size, border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
-        model.add(Convolution2D(
-            NB_FILTER[0], 1, NB_GRAM[1],
+        model.add(Conv2D(
+            NB_FILTER[0], (1, NB_GRAM[1]),
             border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
-        model.add(Convolution2D(
-            NB_FILTER[0], 1, NB_GRAM[2],
+        model.add(Conv2D(
+            NB_FILTER[0], (1, NB_GRAM[2]),
             border_mode='valid', activation='relu'))
-        model.add(Convolution2D(
-            NB_FILTER[1], 1, NB_GRAM[2],
+        model.add(Conv2D(
+            NB_FILTER[1], (1, NB_GRAM[2]),
             border_mode='valid', activation='relu'))
-        model.add(Convolution2D(
-            NB_FILTER[1], 1, NB_GRAM[2],
+        model.add(Conv2D(
+            NB_FILTER[1], (1, NB_GRAM[2]),
             border_mode='valid', activation='relu'))
-        model.add(Convolution2D(
-            NB_FILTER[1], 1, NB_GRAM[2],
+        model.add(Conv2D(
+            NB_FILTER[1], (1, NB_GRAM[2]),
             border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
         model.add(Flatten())
