@@ -68,6 +68,7 @@ if __name__ == "__main__":
     nc.save_ncnn_model(model_name_path)
 
     ytrain_pred = nc.predict(xtrain)
+    print(ytrain_pred)
     train_confusion = confusion_matrix(np.nonzero(ytrain)[1], np.nonzero(ytrain_pred)[1])
     print(train_confusion)
 
