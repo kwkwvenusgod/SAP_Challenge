@@ -21,7 +21,10 @@ class NovelCnn:
 
         model = Sequential()
         model.add(Conv2D(
-            NB_FILTER[0], (raw_feature_dim, NB_GRAM[0]),
+            NB_FILTER[0], (raw_feature_dim/2, NB_GRAM[0]),
+            input_shape=input_size, border_mode='valid', activation='relu'))
+        model.add(Conv2D(
+            NB_FILTER[0], (2, NB_GRAM[0]),
             input_shape=input_size, border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 3)))
         model.add(Conv2D(

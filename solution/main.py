@@ -1,10 +1,12 @@
 import simplejson as js
 import Build_Char_One_Hot_Dic
 import PrepareData
+import pickle
 import numpy as np
 from Novel_CNN import NovelCnn as NC
 from pathlib import Path
 from keras.utils import np_utils
+from sklearn.metrics import confusion_matrix
 
 
 def read_raw_data(_file):
@@ -57,7 +59,21 @@ if __name__ == "__main__":
     nc = NC(input_size=raw_data_size,n_classes=n_classes,raw_feature_dim=raw_feature_dim)
     nc.fit(x[train_seq], y[train_seq])
     eval_result = nc.evaluation(x[test_seq],y[test_seq])
-    print(eval_result)
+
+    model_name_path = 'myNovelCNN.pickle'
+    with open(model_name_path, 'w') as model_file:
+        pickle.dump(nc, model_file)
+
+    ytrain_pred = nc.predict(x[train_seq])
+    train_confusion = confusion_matrix(y[train_seq], ytrain_pred)
+    print(train_confusion)
+
+    ytest_pred = nc.predict(x[test_seq])
+    test_confusion = confusion_matrix(y[test_seq],ytest_pred)
+    print(test_confusion)
+
+
+
 
 
 
