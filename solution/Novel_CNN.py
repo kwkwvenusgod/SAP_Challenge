@@ -22,7 +22,7 @@ class NovelCnn:
         model = Sequential()
         # input kernel shape change from (raw_feature_dim, NB_GRAM[0]) to (raw_feature_dim/2, NB_GRAM[0])
         model.add(Conv2D(
-            NB_FILTER[0], (raw_feature_dim/2, NB_GRAM[0]),
+            NB_FILTER[0], (raw_feature_dim-1, NB_GRAM[0]),
             input_shape=input_size, border_mode='valid', activation='relu'))
         model.add(MaxPooling2D(pool_size=(1,3)))
 
