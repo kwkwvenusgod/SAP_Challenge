@@ -1,7 +1,6 @@
 import simplejson as js
 import Build_Char_One_Hot_Dic
 import PrepareData
-import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from Novel_CNN import NovelCnn as NC
@@ -58,7 +57,9 @@ if __name__ == "__main__":
     train_seq, test_seq = data_set_split(x.shape[0], 0.2)
     n_classes = y.shape[1]
     nc = NC(input_size=raw_data_size,n_classes=n_classes,raw_feature_dim=raw_feature_dim)
-    nc.fit(x[train_seq], y[train_seq])
+    xtrain = x[train_seq]
+    ytrain = y[train_seq]
+    nc.fit(xtrain, ytrain)
     eval_result = nc.evaluation(x[test_seq],y[test_seq])
     print(eval_result)
 
@@ -66,8 +67,8 @@ if __name__ == "__main__":
     print("saving model...")
     nc.save_ncnn_model(model_name_path)
 
-    ytrain_pred = nc.predict(x[train_seq])
-    train_confusion = confusion_matrix(y[train_seq], ytrain_pred)
+    ytrain_pred = nc.predict(xtrain)
+    train_confusion = confusion_matrix(ytrain, ytrain_pred)
     print(train_confusion)
 
     ytest_pred = nc.predict(x[test_seq])
