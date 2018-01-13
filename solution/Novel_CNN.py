@@ -24,7 +24,7 @@ class NovelCnn:
         model.add(Conv2D(
             NB_FILTER[0], (raw_feature_dim/2, NB_GRAM[0]),
             input_shape=input_size, border_mode='valid', activation='relu'))
-        model.add(MaxPooling2D(pool_size=(2,3)))
+        model.add(MaxPooling2D(pool_size=(1,3)))
 
         # add another c-layer and maxpooling kernel size is (2, NB_GRAM[0]); pool size is pool_size=(1, 3)
         model.add(Conv2D(
