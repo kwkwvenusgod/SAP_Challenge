@@ -38,7 +38,7 @@ def data_set_split(data_size, partition):
 def main():
     print(sys.argv[1:len(sys.argv)])
     if len(sys.argv) == 1:
-        n_gram_list = [1]
+        n_gram_list = [1,2]
     else:
         n_gram_list = sys.argv[1:len(sys.argv)]
         n_gram_list = map(int, n_gram_list)

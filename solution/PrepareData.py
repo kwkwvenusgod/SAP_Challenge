@@ -25,16 +25,22 @@ def n_gram_feature_extraction(n_gram, x):
     n_feat_basis = x.shape[1]
     n_feat = n_feat_basis * n_gram
     n_text = x.shape[2]
-    n = x.shape[3]
+    n_last = x.shape[3]
 
-    res = np.zeros((n_sample,n_feat,n_text,n))
+    res = np.zeros((n_sample,n_feat,n_text,n_last))
 
     for i in range(x.shape[0]):
         article = x[i]
-        tmp = np.zeros((n_feat, n_text,n))
+        tmp = np.zeros((n_feat, n_text,n_last))
         for j in range(x.shape[2]):
-            feat = article[:, j:j+n_gram].reshape(n_feat,n)
-            tmp[:,j] = feat
+            if j+n_gram <= x.shape[2]:
+                feat = article[:, j:j + n_gram].reshape(n_feat, n_last)
+                tmp[:, j] = feat
+            else:
+                rest = x.shape[2] - j
+                feat = np.zeros((n_feat,n_last))
+                feat [0:rest*n_feat_basis] = article[:, j:j+rest].reshape(rest*n_feat_basis, n_last)
+                tmp[:, j] = feat
         res[i] = tmp
     return res
 
