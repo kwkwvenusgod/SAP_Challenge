@@ -1,12 +1,14 @@
 import simplejson as js
 import Build_Char_One_Hot_Dic
 import PrepareData
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from Novel_CNN import NovelCnn as NC
 from pathlib import Path
 from keras.utils import np_utils
 from sklearn.metrics import confusion_matrix
+
 
 
 def read_raw_data(_file):
@@ -33,6 +35,38 @@ def data_set_split(data_size, partition):
     return train_sequence,test_sequence
 
 
+def main():
+    if sys.argv[0] is None:
+        n_gram_list = [1]
+    else:
+        n_gram_list = sys.argv[0]
+
+    x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
+    n_feat = x.shape[1]
+    raw_data_size = (n_feat, text_length, 1)
+
+    train_seq, test_seq = data_set_split(x.shape[0], 0.2)
+    n_classes = y.shape[1]
+    nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=n_feat)
+    xtrain = x[train_seq]
+    ytrain = y[train_seq]
+    nc.fit(xtrain, ytrain)
+    eval_result = nc.evaluation(x[test_seq], y[test_seq])
+    print(eval_result)
+
+    model_name_path = 'myNovelCNN.pickle'
+    print("saving model...")
+    nc.save_ncnn_model(model_name_path)
+
+    ytrain_pred = nc.predict(xtrain)
+    res_train = np.concatenate((ytrain_pred, ytrain), axis=1)
+    np.savetxt('rest_train.txt', res_train, fmt='%1.2f')
+
+    ytest_pred = nc.predict(x[test_seq])
+    res_test = np.concatenate((ytest_pred, y[test_seq]), axis=1)
+    np.savetxt('rest_test.txt', res_test, fmt='%1.2f')
+
+
 if __name__ == "__main__":
 
     char_file_path = 'char.json'
@@ -47,36 +81,14 @@ if __name__ == "__main__":
         raw_data = read_raw_data(raw_data_file)
 
     x_one_hot, text_length = PrepareData.prepare_data(raw_data, char_dic, one_hot_feature_dim)
-    n_gram_list = [1,2,3,4]
-    x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
-    n_feat = x.shape[1]
-    raw_data_size = (n_feat, text_length, 1)
 
     label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/ytrain.txt'
     with open(label_file_path, 'r') as label_file:
         label_data = read_label(label_file)
     y = label_data
 
-    train_seq, test_seq = data_set_split(x.shape[0], 0.2)
-    n_classes = y.shape[1]
-    nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=n_feat)
-    xtrain = x[train_seq]
-    ytrain = y[train_seq]
-    nc.fit(xtrain, ytrain)
-    eval_result = nc.evaluation(x[test_seq],y[test_seq])
-    print(eval_result)
+    main()
 
-    model_name_path = 'myNovelCNN.pickle'
-    print("saving model...")
-    nc.save_ncnn_model(model_name_path)
-
-    ytrain_pred = nc.predict(xtrain)
-    res_train = np.concatenate((ytrain_pred,ytrain),axis=1)
-    np.savetxt('rest_train.txt', res_train, fmt='%1.2f')
-
-    ytest_pred = nc.predict(x[test_seq])
-    res_test = np.concatenate((ytest_pred,y[test_seq]), axis=1)
-    np.savetxt('rest_test.txt', res_test, fmt='%1.2f')
 
 
     # train_confusion = confusion_matrix(np.nonzero(ytrain)[1], np.nonzero(ytrain_pred)[1])
