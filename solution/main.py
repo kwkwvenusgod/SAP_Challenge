@@ -49,7 +49,8 @@ if __name__ == "__main__":
     x_one_hot, text_length = PrepareData.prepare_data(raw_data, char_dic, one_hot_feature_dim)
     n_gram_list = [1,2,3,4]
     x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
-    raw_data_size = (one_hot_feature_dim*len(n_gram_list), text_length, 1)
+    n_feat = x.shape[1]
+    raw_data_size = (n_feat, text_length, 1)
 
     label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/ytrain.txt'
     with open(label_file_path, 'r') as label_file:
@@ -58,7 +59,7 @@ if __name__ == "__main__":
 
     train_seq, test_seq = data_set_split(x.shape[0], 0.2)
     n_classes = y.shape[1]
-    nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=one_hot_feature_dim*len(n_gram_list))
+    nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=n_feat)
     xtrain = x[train_seq]
     ytrain = y[train_seq]
     nc.fit(xtrain, ytrain)
@@ -70,7 +71,7 @@ if __name__ == "__main__":
     nc.save_ncnn_model(model_name_path)
 
     ytrain_pred = nc.predict(xtrain)
-    res_train = np.concatenate((ytrain_pred,xtrain),axis=1)
+    res_train = np.concatenate((ytrain_pred,ytrain),axis=1)
     np.savetxt('rest_train.txt', res_train, fmt='%1.2f')
 
     ytest_pred = nc.predict(x[test_seq])
