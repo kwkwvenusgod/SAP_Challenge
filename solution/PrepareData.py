@@ -32,7 +32,7 @@ def n_gram_feature_extraction(n_gram, x):
     for i in range(x.shape[0]):
         article = x[i]
         tmp = np.zeros((n_feat, n_text,n))
-        for j in range(x.shape[1]):
+        for j in range(x.shape[2]):
             feat = article[:, j:j+n_gram].reshape(n_feat,n)
             tmp[:,j] = feat
         res[i] = tmp

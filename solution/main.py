@@ -36,10 +36,12 @@ def data_set_split(data_size, partition):
 
 
 def main():
+
     if len(sys.argv) == 1:
-        n_gram_list = map(int,[1])
+        n_gram_list = [1]
     else:
-        n_gram_list = map(int,sys.argv[1])
+        n_gram_list = sys.argv[1:len(sys.argv)]
+        n_gram_list = map(int, n_gram_list)
 
     x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
     n_feat = x.shape[1]
