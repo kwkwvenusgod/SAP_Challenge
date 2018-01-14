@@ -40,14 +40,16 @@ if __name__ == "__main__":
         char_list = js.load(char_file)
 
     char_dic = Build_Char_One_Hot_Dic.one_hot_encoding(char_list)
-    raw_feature_dim = len(char_list)
+    one_hot_feature_dim = len(char_list)
 
     train_file_path = str(Path().resolve().parent) + '/Offline-Challenge/xtrain_obfuscated.txt'
     with open(train_file_path,'r') as raw_data_file:
         raw_data = read_raw_data(raw_data_file)
 
-    x, text_length = PrepareData.prepare_data(raw_data, char_dic, raw_feature_dim)
-    raw_data_size = (raw_feature_dim, text_length, 1)
+    x_one_hot, text_length = PrepareData.prepare_data(raw_data, char_dic, one_hot_feature_dim)
+    n_gram_list = [1,2,3,4]
+    x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
+    raw_data_size = (one_hot_feature_dim*len(n_gram_list), text_length, 1)
 
     label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/ytrain.txt'
     with open(label_file_path, 'r') as label_file:
@@ -56,7 +58,7 @@ if __name__ == "__main__":
 
     train_seq, test_seq = data_set_split(x.shape[0], 0.2)
     n_classes = y.shape[1]
-    nc = NC(input_size=raw_data_size,n_classes=n_classes,raw_feature_dim=raw_feature_dim)
+    nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=one_hot_feature_dim*len(n_gram_list))
     xtrain = x[train_seq]
     ytrain = y[train_seq]
     nc.fit(xtrain, ytrain)
@@ -68,33 +70,39 @@ if __name__ == "__main__":
     nc.save_ncnn_model(model_name_path)
 
     ytrain_pred = nc.predict(xtrain)
-    print(np.nonzero(ytrain_pred)[1])
-    train_confusion = confusion_matrix(np.nonzero(ytrain)[1], np.nonzero(ytrain_pred)[1])
-    print(train_confusion)
+    res_train = np.concatenate((ytrain_pred,xtrain),axis=1)
+    np.savetxt('rest_train.txt', res_train, fmt='%1.2f')
 
     ytest_pred = nc.predict(x[test_seq])
-    test_confusion = confusion_matrix(np.nonzero(ytest_pred)[1],np.nonzero(ytest_pred)[1])
-    print(test_confusion)
+    res_test = np.concatenate((ytest_pred,y[test_seq]), axis=1)
+    np.savetxt('rest_test.txt', res_test, fmt='%1.2f')
 
-    # plot confusion matrix
-    label_dict_path = "label_dict.json"
-    with open(label_dict_path,'r') as label_dict_file:
-        label_dict = js.load(label_dict_file)
-    categories = label_dict.keys()
 
-    figure = plt.figure()
-    plt.clf()
+    # train_confusion = confusion_matrix(np.nonzero(ytrain)[1], np.nonzero(ytrain_pred)[1])
+    # print(train_confusion)
 
-    train_figure = figure.add_subplot(1,2,1)
-    train_figure.set_yticks(categories)
-    train_figure.imshow(train_confusion, cmap=plt.cm.jet,
-              interpolation='nearest')
+    # test_confusion = confusion_matrix(np.nonzero(ytest_pred)[1],np.nonzero(ytest_pred)[1])
+    # print(test_confusion)
 
-    train_figure = figure.add_subplot(1,2,2)
-    train_figure.set_yticks(categories)
-    train_figure.imshow(train_confusion, cmap=plt.cm.jet,
-                        interpolation='nearest')
-    plt.savefig("res.eps", format="eps")
+    # # plot confusion matrix
+    # label_dict_path = "label_dict.json"
+    # with open(label_dict_path,'r') as label_dict_file:
+    #     label_dict = js.load(label_dict_file)
+    # categories = label_dict.keys()
+    #
+    # figure = plt.figure()
+    # plt.clf()
+    #
+    # train_figure = figure.add_subplot(1,2,1)
+    # train_figure.set_yticks(categories)
+    # train_figure.imshow(train_confusion, cmap=plt.cm.jet,
+    #           interpolation='nearest')
+    #
+    # train_figure = figure.add_subplot(1,2,2)
+    # train_figure.set_yticks(categories)
+    # train_figure.imshow(train_confusion, cmap=plt.cm.jet,
+    #                     interpolation='nearest')
+    # plt.savefig("res.eps", format="eps")
 
 
 

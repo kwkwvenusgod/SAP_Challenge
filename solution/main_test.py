@@ -48,6 +48,8 @@ if __name__ == "__main__":
         raw_data = read_raw_data(raw_data_file)
 
     x, text_length = PrepareData.prepare_data(raw_data, char_dic, raw_feature_dim)
+
+    x_ngram = PrepareData.feat_extraction([1,2,3,4],x)
     raw_data_size = (raw_feature_dim, text_length, 1)
 
     label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/test/ytrain.txt'
