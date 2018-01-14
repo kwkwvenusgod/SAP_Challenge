@@ -4,6 +4,7 @@ import PrepareData
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 from Novel_CNN import NovelCnn as NC
 from pathlib import Path
 from keras.utils import np_utils
@@ -35,19 +36,15 @@ def data_set_split(data_size, partition):
 
 
 def main():
-    if sys.argv[0] is None:
-        n_gram_list = [1]
+    print("read input")
+    if len(sys.argv) == 1:
+        n_gram_list = map(int, [1])
     else:
-        n_gram_list = sys.argv[0]
+        n_gram_list = map(int, sys.argv[1])
 
     x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
     n_feat = x.shape[1]
     raw_data_size = (n_feat, text_length, 1)
-
-    label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/ytrain.txt'
-    with open(label_file_path, 'r') as label_file:
-        label_data = read_label(label_file)
-    y = label_data
 
     train_seq, test_seq = data_set_split(x.shape[0], 0.2)
     n_classes = y.shape[1]
@@ -83,55 +80,16 @@ if __name__ == "__main__":
     train_file_path = str(Path().resolve().parent) + '/Offline-Challenge/test/xtrain_obfuscated.txt'
     with open(train_file_path,'r') as raw_data_file:
         raw_data = read_raw_data(raw_data_file)
-
-    x, text_length = PrepareData.prepare_data(raw_data, char_dic, raw_feature_dim)
-
-    x_ngram = PrepareData.feat_extraction([1,2],x)
-    raw_data_size = (raw_feature_dim, text_length, 1)
-
+    print("extract one hot feature")
+    x_one_hot, text_length = PrepareData.prepare_data(raw_data, char_dic, raw_feature_dim)
+    print("extract label")
     label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/test/ytrain.txt'
     with open(label_file_path, 'r') as label_file:
         label_data = read_label(label_file)
     y = label_data
 
-    train_seq, test_seq = data_set_split(x.shape[0], 0.1)
-    n_classes = y.shape[1]
-    nc = NC(input_size=raw_data_size,n_classes=n_classes,raw_feature_dim=raw_feature_dim)
-    nc.fit(x[train_seq], y[train_seq])
-    eval_result = nc.evaluation(x[test_seq],y[test_seq])
-    print(eval_result)
+    main()
 
-    model_name_path = 'myNovelCNN.pickle'
-    with open(model_name_path, 'wb') as model_file:
-        pickle.dump(nc, model_file, protocol=pickle.HIGHEST_PROTOCOL)
-
-    ytrain_pred = nc.predict(x[train_seq])
-    train_confusion = confusion_matrix(y[train_seq], ytrain_pred)
-    print(train_confusion)
-
-    ytest_pred = nc.predict(x[test_seq])
-    test_confusion = confusion_matrix(np_utils.y[test_seq],ytest_pred)
-    print(test_confusion)
-
-    # plot confusion matrix
-    label_dict_path = "label_dict.json"
-    with open(label_dict_path,'r') as label_dict_file:
-        label_dict = js.load(label_dict_file)
-    categories = label_dict.keys()
-
-    figure = plt.figure()
-    plt.clf()
-
-    train_figure = figure.add_subplot(1,2,1)
-    train_figure.set_yticks(categories)
-    train_figure.imshow(train_confusion, cmap=plt.cm.jet,
-              interpolation='nearest')
-
-    train_figure = figure.add_subplot(1,2,2)
-    train_figure.set_yticks(categories)
-    train_figure.imshow(train_confusion, cmap=plt.cm.jet,
-                        interpolation='nearest')
-    plt.savefig("res.eps", format="eps")
 
 
 
