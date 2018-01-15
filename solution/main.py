@@ -1,16 +1,13 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = 1
 import simplejson as js
-from keras.layers import Concatenate, Convolution1D
-
 import Build_Char_One_Hot_Dic
 import PrepareData
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
 from Novel_CNN import NovelCnn as NC
 from pathlib import Path
 from keras.utils import np_utils
-from sklearn.metrics import confusion_matrix
-
 
 
 def read_raw_data(_file):

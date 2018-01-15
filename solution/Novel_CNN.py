@@ -13,29 +13,27 @@ from keras.layers.convolutional import MaxPooling2D
 
 
 class NovelCnn:
-    def __init__(self,input_size=None, n_classes=None,raw_feature_dim=None, batch_size=8, epochs=15):
+    def __init__(self,input_size=None, n_classes=None,raw_feature_dim=None, batch_size=8, epochs=10):
         self._model = None
         self._batch_size = batch_size
         self._epochs = epochs
 
         NB_FILTER = [64, 128]
-        N_GRAM = [4, 5]
+        Parallel_N_GRAM = [4, 5]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
-        DROPOUT = [0.3, 0.3]
-
-
+        DROPOUT = [0.5, 0.5]
 
         conv_blocks = []
         inp = Input(shape=input_size)
-        for n_g in N_GRAM:
+        for n_g in Parallel_N_GRAM:
             conv = Conv2D(
             NB_FILTER[0], (raw_feature_dim, n_g),
             input_shape=input_size, border_mode='valid', activation='relu')(inp)
             conv = MaxPooling2D(pool_size=(1,3))(conv)
             conv_blocks.append(conv)
 
-        if len(N_GRAM)>0:
+        if len(Parallel_N_GRAM)>0:
             out_conv = Merge(mode='concat')(conv_blocks)
         else:
             out_conv = conv_blocks[0]
