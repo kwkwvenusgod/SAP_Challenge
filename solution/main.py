@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = 1
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import simplejson as js
 import Build_Char_One_Hot_Dic
 import PrepareData
