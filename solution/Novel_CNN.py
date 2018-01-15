@@ -1,4 +1,4 @@
-from keras import Model
+from keras.models import Model
 from keras.models import Sequential
 from keras.models import save_model
 from keras.models import load_model
