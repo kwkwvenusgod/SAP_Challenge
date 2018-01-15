@@ -19,7 +19,7 @@ class NovelCnn:
         self._epochs = epochs
 
         NB_FILTER = [64, 128]
-        Parallel_N_GRAM = [4, 5]
+        Parallel_N_GRAM = [3, 4, 5]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
         DROPOUT = [0.5, 0.5]
