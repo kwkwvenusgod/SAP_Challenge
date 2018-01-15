@@ -65,7 +65,7 @@ def main():
 
     # train_seq, test_seq = data_set_split(x.shape[0], 0.2)
     n_classes = y.shape[1]
-    k = 2
+    k = 5
     k_fold_sequence = data_set_k_fold_separation(x.shape[0],k)
 
     output_train = open('train_acc.txt', 'wb')

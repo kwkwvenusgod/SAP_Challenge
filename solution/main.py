@@ -39,8 +39,8 @@ def data_set_k_fold_separation(data_size, k_fold):
     sequence = np.random.permutation(sequence)
     k_sequence = []
     ratio = np.true_divide(1, k_fold)
-    for k in range(k_fold-1):
-        if k == k_fold-1:
+    for k in range(k_fold):
+        if k == k_fold:
             start = int(k * ratio * data_size)
             tmp = sequence[start:]
         else:
