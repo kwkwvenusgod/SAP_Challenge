@@ -69,7 +69,7 @@ def main():
     k_fold_sequence = data_set_k_fold_separation(x.shape[0],k)
 
     output_train = open('train_acc.txt', 'wb')
-    output_test = open('train_acc.txt', 'wb')
+    output_test = open('test_acc.txt', 'wb')
 
     train_acc = []
     test_acc = []
