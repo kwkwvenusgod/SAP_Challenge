@@ -1,15 +1,15 @@
-from keras import Input, Model
+from keras import Model
 from keras.models import Sequential
 from keras.models import save_model
 from keras.models import load_model
-from keras.layers import Dense, Concatenate, GlobalMaxPooling2D, Merge
+from keras.layers import Dense, Merge
 from keras.layers import Dropout
 from keras.layers import Flatten
+from keras.layers import Input
 from keras.constraints import maxnorm
 from keras.optimizers import Adamax
 from keras.layers.convolutional import Conv2D
 from keras.layers.convolutional import MaxPooling2D
-
 
 
 class NovelCnn:
