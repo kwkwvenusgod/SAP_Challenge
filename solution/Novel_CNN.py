@@ -1,13 +1,15 @@
+from keras import Input, Model
 from keras.models import Sequential
 from keras.models import save_model
 from keras.models import load_model
-from keras.layers import Dense
+from keras.layers import Dense, Concatenate, GlobalMaxPooling2D, Merge
 from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.constraints import maxnorm
 from keras.optimizers import Adamax
 from keras.layers.convolutional import Conv2D
 from keras.layers.convolutional import MaxPooling2D
+
 
 
 class NovelCnn:
@@ -17,16 +19,38 @@ class NovelCnn:
         self._epochs = epochs
 
         NB_FILTER = [64, 128]
+        N_GRAM = [4, 5]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
         DROPOUT = [0.3, 0.3]
 
-        model = Sequential()
 
-        model.add(Conv2D(
-            NB_FILTER[0], (raw_feature_dim, NB_GRAM[0]),
-            input_shape=input_size, border_mode='valid', activation='relu'))
-        model.add(MaxPooling2D(pool_size=(1,3)))
+
+        conv_blocks = []
+        inp = Input(shape=input_size)
+        for n_g in N_GRAM:
+            conv = Conv2D(
+            NB_FILTER[0], (raw_feature_dim, n_g),
+            input_shape=input_size, border_mode='valid', activation='relu')(inp)
+            conv = MaxPooling2D(pool_size=(1,3))(conv)
+            conv_blocks.append(conv)
+
+        if len(N_GRAM)>0:
+            out_conv = Merge(mode='concat')(conv_blocks)
+        else:
+            out_conv = conv_blocks[0]
+
+        conv_parallel = Model(inputs=inp, outputs=out_conv)
+
+        model = Sequential()
+        model.add(conv_parallel)
+
+
+        # model.add(Conv2D(
+        #     NB_FILTER[0], (raw_feature_dim, NB_GRAM[0]),
+        #     input_shape=input_size, border_mode='valid', activation='relu'))
+        # model.add(MaxPooling2D(pool_size=(1,3)))
+
 
         # model.add(Conv2D(
         #     NB_FILTER[0], (1, NB_GRAM[0]),

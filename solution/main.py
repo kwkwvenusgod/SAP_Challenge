@@ -1,4 +1,6 @@
 import simplejson as js
+from keras.layers import Concatenate, Convolution1D
+
 import Build_Char_One_Hot_Dic
 import PrepareData
 import sys
@@ -90,7 +92,6 @@ if __name__ == "__main__":
     y = label_data
 
     main()
-
 
 
     # train_confusion = confusion_matrix(np.nonzero(ytrain)[1], np.nonzero(ytrain_pred)[1])
