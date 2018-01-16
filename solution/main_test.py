@@ -77,7 +77,7 @@ def main():
             if i != j:
                 train_seq.extend(k_fold_sequence[j])
 
-        nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=n_feat,epochs=1)
+        nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=n_feat)
         xtrain = x[train_seq]
         ytrain = y[train_seq]
         nc.fit(xtrain, ytrain)

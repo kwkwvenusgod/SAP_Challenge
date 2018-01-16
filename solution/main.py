@@ -69,10 +69,7 @@ def main():
     k_fold_sequence = data_set_k_fold_separation(x.shape[0],k)
 
     output_train = open('train_acc.txt', 'wb')
-    output_test = open('test_acc.txt', 'wb')
-
-    train_acc = []
-    test_acc = []
+    output_test = open('train_acc.txt', 'wb')
     for i in range(k):
         test_seq = k_fold_sequence[i]
         train_seq = []
@@ -88,11 +85,9 @@ def main():
         eval_train_result = nc.evaluation(xtrain, ytrain)
         print(eval_train_result)
         print>>output_train,[k,eval_train_result]
-        train_acc.append(eval_train_result)
         eval_test_result = nc.evaluation(x[test_seq], y[test_seq])
         print(eval_test_result)
         print>>output_test, [k, eval_test_result]
-        test_acc.append(eval_test_result)
 
 
 
@@ -108,8 +103,8 @@ def main():
         # ytest_pred = nc.predict(x[test_seq])
         # res_test = np.concatenate((ytest_pred, y[test_seq]), axis=1)
         # np.savetxt('rest_test.txt', res_test, fmt='%1.2f')
-    print>>output_train,['average', np.mean(np.asarray(train_acc), axis=0)]
-    print>>output_test, ['average', np.mean(np.asarray(test_acc), axis=0)]
+    print>>output_train,{'average', np.mean(eval_train_result, axis=0)}
+    print>>output_test, {'average', np.mean(eval_test_result, axis=0)}
 
 if __name__ == "__main__":
 
@@ -158,19 +153,4 @@ if __name__ == "__main__":
     # train_figure.set_yticks(categories)
     # train_figure.imshow(train_confusion, cmap=plt.cm.jet,
     #                     interpolation='nearest')
-    # plt.savefig("res.eps", format="eps")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # plt.savefig("res.eps", format="e
