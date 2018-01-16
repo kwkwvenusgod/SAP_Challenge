@@ -130,6 +130,7 @@ if __name__ == "__main__":
         validate_raw = read_raw_data(validate_raw_file)
 
     x_one_hot, text_length = PrepareData.prepare_data(raw_data, char_dic, one_hot_feature_dim)
+    x_validate_one_hot, text_length = PrepareData.prepare_data(validate_raw, char_dic, one_hot_feature_dim, text_length=text_length)
 
     label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/test/ytrain.txt'
     with open(label_file_path, 'r') as label_file:

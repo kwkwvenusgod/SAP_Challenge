@@ -21,7 +21,7 @@ class NovelCnn:
         Parallel_N_GRAM = [4, 5]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
-        DROPOUT = [0.7, 0.7]
+        DROPOUT = [0.6, 0.6]
 
         model_blocks = []
 

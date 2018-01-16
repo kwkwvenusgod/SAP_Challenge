@@ -15,7 +15,10 @@ def prepare_data(raw_data, one_hot_dict, feat_len, text_length=None):
 
     for i in range(len(train_raw)):
         tmp = np.zeros([feat_len,text_length])
-        tmp[:, 0:len(train_raw[i])] = np.asarray(train_raw[i]).transpose()
+        if text_length>len(train_raw[i]):
+            tmp[:, 0:len(train_raw[i])] = np.asarray(train_raw[i]).transpose()
+        else:
+            tmp[:, 0:len(train_raw[i])] = np.asarray(train_raw[i][0:text_length]).transpose()
         x[i, :, :, 0] = tmp
 
     return x, text_length
