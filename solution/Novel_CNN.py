@@ -24,24 +24,31 @@ class NovelCnn:
         FULLY_CONNECTED_UNIT = 256
         DROPOUT = [0.5, 0.5]
 
-        conv_blocks = []
-        inp = Input(shape=input_size)
+        model_blocks = []
+
         for n_g in Parallel_N_GRAM:
-            conv = Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu')(inp)
-            conv = MaxPooling2D(pool_size=(1,3))(conv)
-            conv_blocks.append(conv)
-
-        if len(Parallel_N_GRAM)>0:
-            out_conv = Merge(mode='concat')(conv_blocks)
-        else:
-            out_conv = conv_blocks[0]
-
-        conv_parallel = Model(inputs=inp, outputs=out_conv)
+            seq_model = Sequential()
+            seq_model.add(Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu'))
+            seq_model.add(MaxPooling2D(pool_size=(1,3)))
+            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]),border_mode='valid', activation='relu'))
+            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
+            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
+            seq_model.add(MaxPooling2D(pool_size=(1,3)))
+            seq_model.add(Flatten())
+            seq_model.add(Dropout(DROPOUT[0]))
+            seq_model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
+            seq_model.add(Dropout(DROPOUT[1]))
+            seq_model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
+            model_blocks.append(seq_model)
 
         model = Sequential()
-        model.add(conv_parallel)
+        model.add(Merge(model_blocks, mode='concat'))
+        model.add(Dense(n_classes, activation='softmax'))
+        model.compile(
+            loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])
+        self._model = model
 
-
+        # model.add(conv_parallel)
         # model.add(Conv2D(
         #     NB_FILTER[0], (raw_feature_dim, NB_GRAM[0]),
         #     input_shape=input_size, border_mode='valid', activation='relu'))
@@ -61,29 +68,29 @@ class NovelCnn:
         # model.add(Conv2D(
         #     NB_FILTER[0], (1, NB_GRAM[2]),
         #     border_mode='valid', activation='relu'))
-        model.add(Conv2D(
-            NB_FILTER[1], (1, NB_GRAM[2]),
-            border_mode='valid', activation='relu'))
-        model.add(Conv2D(
-            NB_FILTER[1], (1, NB_GRAM[2]),
-            border_mode='valid', activation='relu'))
-        model.add(Conv2D(
-            NB_FILTER[1], (1, NB_GRAM[2]),
-            border_mode='valid', activation='relu'))
-        model.add(MaxPooling2D(pool_size=(1, 3)))
-        model.add(Flatten())
-        model.add(Dropout(DROPOUT[0]))
-        model.add(Dense(
-            FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
-        model.add(Dropout(DROPOUT[1]))
-        model.add(Dense(
-            FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
-        model.add(Dense(n_classes, activation='softmax'))
+        # model.add(Conv2D(
+        #     NB_FILTER[1], (1, NB_GRAM[2]),
+        #     border_mode='valid', activation='relu'))
+        # model.add(Conv2D(
+        #     NB_FILTER[1], (1, NB_GRAM[2]),
+        #     border_mode='valid', activation='relu'))
+        # model.add(Conv2D(
+        #     NB_FILTER[1], (1, NB_GRAM[2]),
+        #     border_mode='valid', activation='relu'))
+        # model.add(MaxPooling2D(pool_size=(1, 3)))
+        # model.add(Flatten())
+        # model.add(Dropout(DROPOUT[0]))
+        # model.add(Dense(
+        #     FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
+        # model.add(Dropout(DROPOUT[1]))
+        # model.add(Dense(
+        #     FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
+        # model.add(Dense(n_classes, activation='softmax'))
+        #
+        # model.compile(
+        #     loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])
 
-        model.compile(
-            loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])
-
-        self._model = model
+        # self._model = conv_parallel
 
     def fit(self, xtrain, ytrain):
         self._model.fit(xtrain,ytrain,self._batch_size,self._epochs,verbose=1)

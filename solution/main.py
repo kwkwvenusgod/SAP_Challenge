@@ -84,7 +84,7 @@ def main():
         nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=n_feat)
         xtrain = x[train_seq]
         ytrain = y[train_seq]
-        nc.fit(xtrain, ytrain)
+        nc.fit([xtrain,xtrain,xtrain], ytrain)
 
         eval_train_result = nc.evaluation(xtrain, ytrain)
         print(eval_train_result)
