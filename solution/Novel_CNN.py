@@ -42,7 +42,7 @@ class NovelCnn:
         # model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
         model.add(Dropout(DROPOUT[1]))
         model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3), kernel_regularizer=regularizers.l2(0.01)))
-        model.add(Dense(n_classes, activation='softmax', kernel_regularizer=regularizers.l2(0.01)))
+        model.add(Dense(n_classes, activation='softmax'))
         model.compile(
             loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])
         self._model = model
