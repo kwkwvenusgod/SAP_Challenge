@@ -117,7 +117,7 @@ if __name__ == "__main__":
     with open(train_file_path,'r') as raw_data_file:
         raw_data = read_raw_data(raw_data_file)
 
-    validate_file_path = str(Path().resolve().paren) + '/Offline-Challenge/xtest_obfuscated.txt'
+    validate_file_path = str(Path().resolve().parent) + '/Offline-Challenge/xtest_obfuscated.txt'
     with open(validate_file_path, 'r') as validate_raw_file:
         validate_raw = read_raw_data(validate_raw_file)
 
