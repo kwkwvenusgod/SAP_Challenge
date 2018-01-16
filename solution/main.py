@@ -1,5 +1,5 @@
-# import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import simplejson as js
 import Build_Char_One_Hot_Dic
 import PrepareData
@@ -52,8 +52,9 @@ def data_set_k_fold_separation(data_size, k_fold):
 
 def main():
 
+    # you can input a list of integers for the raw n gram combination
     if len(sys.argv) == 1:
-        n_gram_list = [1]
+        n_gram_list = [5]
     else:
         n_gram_list = sys.argv[1:len(sys.argv)]
         n_gram_list = map(int, n_gram_list)
