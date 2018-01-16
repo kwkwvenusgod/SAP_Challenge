@@ -61,7 +61,7 @@ def main():
 
     x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
 
-    x_validate = PrepareData.feat_extraction(n_gram_list, x_one_hot)
+    x_validate = PrepareData.feat_extraction(n_gram_list, x_validate_one_hot)
     n_feat = x.shape[1]
     raw_data_size = (n_feat, text_length, 1)
 
@@ -123,6 +123,7 @@ if __name__ == "__main__":
 
     x_one_hot, text_length = PrepareData.prepare_data(raw_data, char_dic, one_hot_feature_dim)
 
+    x_validate_one_hot, text_length = PrepareData.prepare_data(validate_raw, char_dic, one_hot_feature_dim, text_length=text_length)
     label_file_path = str(Path().resolve().parent) + '/Offline-Challenge/ytrain.txt'
     with open(label_file_path, 'r') as label_file:
         label_data = read_label(label_file)

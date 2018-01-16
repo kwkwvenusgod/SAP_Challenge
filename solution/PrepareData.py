@@ -1,14 +1,15 @@
 import numpy as np
 
 
-def prepare_data(raw_data, one_hot_dict, feat_len):
+def prepare_data(raw_data, one_hot_dict, feat_len, text_length=None):
     train_raw = []
     raw_text_length = []
     for data in raw_data:
         raw_text_length.append(len(data))
         train_raw.append([one_hot_dict.get(d) for d in data])
 
-    text_length = max(raw_text_length)
+    if text_length is None:
+        text_length = max(raw_text_length)
 
     x = np.zeros((len(raw_data), feat_len, text_length, 1))
 
