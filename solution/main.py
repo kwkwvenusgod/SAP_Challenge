@@ -86,10 +86,12 @@ def main():
         ytrain = y[train_seq]
         nc.fit([xtrain,xtrain,xtrain], ytrain)
 
-        eval_train_result = nc.evaluation(xtrain, ytrain)
+        eval_train_result = nc.evaluation([xtrain,xtrain,xtrain], ytrain)
         print(eval_train_result)
         print>>output_train,[k,eval_train_result]
-        eval_test_result = nc.evaluation(x[test_seq], y[test_seq])
+        xtest = x[test_seq]
+        ytest = y[test_seq]
+        eval_test_result = nc.evaluation([xtest,xtest,xtest], ytest)
         print(eval_test_result)
         print>>output_test, [k, eval_test_result]
 
