@@ -94,7 +94,7 @@ def main():
         print(eval_test_result)
         print>>output_test, [k, eval_test_result]
 
-        y_validate_k = nc.predict(x_validate)
+        y_validate_k = nc.predict([x_validate,x_validate])
         y_validate_k = y_validate_k.argmax(axis=1)
 
         y_validate.append(y_validate_k)

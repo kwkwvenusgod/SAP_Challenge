@@ -18,7 +18,7 @@ class NovelCnn:
         self._epochs = epochs
 
         NB_FILTER = [64, 128]
-        Parallel_N_GRAM = [ 4, 5]
+        Parallel_N_GRAM = [4, 5]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
         DROPOUT = [0.7, 0.7]
@@ -27,7 +27,7 @@ class NovelCnn:
 
         for n_g in Parallel_N_GRAM:
             seq_model = Sequential()
-            seq_model.add(Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+            seq_model.add(Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu'))
             seq_model.add(MaxPooling2D(pool_size=(1,3)))
             seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]),border_mode='valid', activation='relu',kernel_regularizer=regularizers.l2(0.01)))
             # seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
