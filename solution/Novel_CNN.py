@@ -1,11 +1,9 @@
-from keras.models import Model
 from keras.models import Sequential
 from keras.models import save_model
 from keras.models import load_model
 from keras.layers import Dense, Merge
 from keras.layers import Dropout
 from keras.layers import Flatten
-from keras.layers import Input
 from keras.constraints import maxnorm
 from keras.optimizers import Adamax
 from keras.layers.convolutional import Conv2D
@@ -31,18 +29,18 @@ class NovelCnn:
             seq_model.add(Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu'))
             seq_model.add(MaxPooling2D(pool_size=(1,3)))
             seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]),border_mode='valid', activation='relu'))
-            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
-            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
+            # seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
+            # seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
             seq_model.add(MaxPooling2D(pool_size=(1,3)))
             seq_model.add(Flatten())
-            seq_model.add(Dropout(DROPOUT[0]))
-            seq_model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
-            seq_model.add(Dropout(DROPOUT[1]))
-            seq_model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
             model_blocks.append(seq_model)
 
         model = Sequential()
         model.add(Merge(model_blocks, mode='concat'))
+        # model.add(Dropout(DROPOUT[0]))
+        # model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
+        model.add(Dropout(DROPOUT[1]))
+        model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
         model.add(Dense(n_classes, activation='softmax'))
         model.compile(
             loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])

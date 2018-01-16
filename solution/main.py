@@ -69,11 +69,8 @@ def main():
     k_fold_sequence = data_set_k_fold_separation(x.shape[0],k)
 
     output_train = open('train_acc.txt', 'wb')
-    output_test = open('train_acc.txt', 'wb')
-    print("input shape:")
-    print(x.shape)
-    print("feature dim:")
-    print(n_feat)
+    output_test = open('test_acc.txt', 'wb')
+
     for i in range(k):
         test_seq = k_fold_sequence[i]
         train_seq = []
