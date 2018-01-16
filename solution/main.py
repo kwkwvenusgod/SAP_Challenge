@@ -70,6 +70,10 @@ def main():
 
     output_train = open('train_acc.txt', 'wb')
     output_test = open('train_acc.txt', 'wb')
+    print("input shape:")
+    print(x.shape)
+    print("feature dim:")
+    print(n_feat)
     for i in range(k):
         test_seq = k_fold_sequence[i]
         train_seq = []

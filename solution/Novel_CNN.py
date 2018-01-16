@@ -27,9 +27,7 @@ class NovelCnn:
         conv_blocks = []
         inp = Input(shape=input_size)
         for n_g in Parallel_N_GRAM:
-            conv = Conv2D(
-            NB_FILTER[0], (raw_feature_dim, n_g),
-            input_shape=input_size, border_mode='valid', activation='relu')(inp)
+            conv = Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu')(inp)
             conv = MaxPooling2D(pool_size=(1,3))(conv)
             conv_blocks.append(conv)
 
