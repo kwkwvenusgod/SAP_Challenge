@@ -50,6 +50,7 @@ def data_set_k_fold_separation(data_size, k_fold):
         k_sequence.append(tmp)
     return k_sequence
 
+# should be unittest
 
 def main():
 
@@ -94,18 +95,6 @@ def main():
         y_validate_k = nc.predict(x_validate)
         y_validate_k = y_validate_k.argmax(axis=1)
 
-        y_validate.append(y_validate_k)
-        # model_name_path = 'myNovelCNN.pickle'
-        # print("saving model...")
-        # nc.save_ncnn_model(model_name_path)
-
-        # ytrain_pred = nc.predict(xtrain)
-        # res_train = np.concatenate((ytrain_pred, ytrain), axis=1)
-        # np.savetxt('rest_train.txt', res_train, fmt='%1.2f')
-        #
-        # ytest_pred = nc.predict(x[test_seq])
-        # res_test = np.concatenate((ytest_pred, y[test_seq]), axis=1)
-        # np.savetxt('rest_test.txt', res_test, fmt='%1.2f')
     print>>output_train,{'average', np.mean(eval_train_result, axis=0)}
     print>>output_test, {'average', np.mean(eval_test_result, axis=0)}
     y_validate_file_path = 'ytest.txt'
@@ -138,35 +127,6 @@ if __name__ == "__main__":
     y = label_data
 
     main()
-
-
-    # train_confusion = confusion_matrix(np.nonzero(ytrain)[1], np.nonzero(ytrain_pred)[1])
-    # print(train_confusion)
-
-    # test_confusion = confusion_matrix(np.nonzero(ytest_pred)[1],np.nonzero(ytest_pred)[1])
-    # print(test_confusion)
-
-    # # plot confusion matrix
-    # label_dict_path = "label_dict.json"
-    # with open(label_dict_path,'r') as label_dict_file:
-    #     label_dict = js.load(label_dict_file)
-    # categories = label_dict.keys()
-    #
-    # figure = plt.figure()
-    # plt.clf()
-    #
-    # train_figure = figure.add_subplot(1,2,1)
-    # train_figure.set_yticks(categories)
-    # train_figure.imshow(train_confusion, cmap=plt.cm.jet,
-    #           interpolation='nearest')
-    #
-    # train_figure = figure.add_subplot(1,2,2)
-    # train_figure.set_yticks(categories)
-    # train_figure.imshow(train_confusion, cmap=plt.cm.jet,
-    #                     interpolation='nearest')
-    # plt.savefig("res.eps", format="eps")
-
-
 
 
 

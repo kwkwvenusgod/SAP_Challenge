@@ -1,5 +1,5 @@
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import simplejson as js
 import Build_Char_One_Hot_Dic
 import PrepareData
@@ -25,16 +25,15 @@ def read_label(_file):
     return youtput
 
 
-def data_set_split(data_size, partition):
-    train_size = int((1-partition) * data_size)
-    sequence = range(data_size)
-    sequence = np.random.permutation(sequence)
-    train_sequence = sequence[0:train_size]
-    test_sequence = sequence[train_size:-1]
-    return train_sequence,test_sequence
-
-
 def data_set_k_fold_separation(data_size, k_fold):
+
+    '''
+    This method is to separate data into training and testing set
+    :param data_size: data size
+    :param k_fold: integer k fold number
+    :return:
+    '''
+
     sequence = range(data_size)
     sequence = np.random.permutation(sequence)
     k_sequence = []
@@ -65,7 +64,6 @@ def main():
     n_feat = x.shape[1]
     raw_data_size = (n_feat, text_length, 1)
 
-    # train_seq, test_seq = data_set_split(x.shape[0], 0.2)
     n_classes = y.shape[1]
     k = 5
     k_fold_sequence = data_set_k_fold_separation(x.shape[0],k)
@@ -73,6 +71,8 @@ def main():
     output_train = open('train_acc.txt', 'wb')
     output_test = open('test_acc.txt', 'wb')
     y_validate = []
+    train_loss_acc = []
+    test_loss_acc = []
     for i in range(k):
         test_seq = k_fold_sequence[i]
         train_seq = []
@@ -86,11 +86,13 @@ def main():
         nc.fit([xtrain,xtrain], ytrain)
 
         eval_train_result = nc.evaluation([xtrain,xtrain], ytrain)
+        train_loss_acc.append(eval_train_result)
         print(eval_train_result)
         print>>output_train,[k,eval_train_result]
         xtest = x[test_seq]
         ytest = y[test_seq]
         eval_test_result = nc.evaluation([xtest,xtest], ytest)
+        test_loss_acc.append(eval_test_result)
         print(eval_test_result)
         print>>output_test, [k, eval_test_result]
 
@@ -98,11 +100,17 @@ def main():
         y_validate_k = y_validate_k.argmax(axis=1)
 
         y_validate.append(y_validate_k)
-    print>>output_train,['average', np.mean(eval_train_result, axis=0)]
-    print>>output_test, ['average', np.mean(eval_test_result, axis=0)]
+    print>>output_train,['average', np.mean(np.asarray(train_loss_acc), axis=0)]
+    print>>output_test, ['average', np.mean(np.asarray(test_loss_acc), axis=0)]
 
-    y_validate_file_path = 'ytest.txt'
-    np.savetxt(fname=y_validate_file_path, X=np.asarray(y_validate_k), fmt='%1.2f')
+    y_validate_file_path = 'ytest_all.txt'
+    np.savetxt(fname=y_validate_file_path, X=np.asarray(y_validate), fmt='%i')
+    Y = np.asarray(y_validate).transpose()
+    y_final = []
+    for tmp in Y:
+        y_final.append(np.bincount(tmp).argmax())
+    y_final_validate_file_path = 'ytest.txt'
+    np.savetxt(fname=y_final_validate_file_path, X=y_final, fmt='%i')
 
 if __name__ == "__main__":
 

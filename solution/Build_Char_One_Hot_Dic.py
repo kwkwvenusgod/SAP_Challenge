@@ -1,5 +1,7 @@
 import numpy as np
 
+# build char dictionary
+
 
 def one_hot_encoding(char_list):
     res = {}
