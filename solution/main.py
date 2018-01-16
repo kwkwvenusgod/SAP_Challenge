@@ -98,8 +98,8 @@ def main():
         y_validate_k = y_validate_k.argmax(axis=1)
 
         y_validate.append(y_validate_k)
-    print>>output_train,{'average', np.mean(eval_train_result, axis=0)}
-    print>>output_test, {'average', np.mean(eval_test_result, axis=0)}
+    print>>output_train,['average', np.mean(eval_train_result, axis=0)]
+    print>>output_test, ['average', np.mean(eval_test_result, axis=0)]
 
     y_validate_file_path = 'ytest.txt'
     np.savetxt(fname=y_validate_file_path, X=np.asarray(y_validate_k), fmt='%1.2f')

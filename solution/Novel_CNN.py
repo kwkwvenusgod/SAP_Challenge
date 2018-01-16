@@ -29,7 +29,7 @@ class NovelCnn:
             seq_model = Sequential()
             seq_model.add(Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu'))
             seq_model.add(MaxPooling2D(pool_size=(1,3)))
-            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]),border_mode='valid', activation='relu',kernel_regularizer=regularizers.l2(0.01)))
+            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]),border_mode='valid', activation='relu'))
             # seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
             # seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
             seq_model.add(MaxPooling2D(pool_size=(1,3)))
