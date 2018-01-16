@@ -60,6 +60,8 @@ def main():
         n_gram_list = map(int, n_gram_list)
 
     x = PrepareData.feat_extraction(n_gram_list, x_one_hot)
+
+    x_validate = PrepareData.feat_extraction(n_gram_list, x_one_hot)
     n_feat = x.shape[1]
     raw_data_size = (n_feat, text_length, 1)
 
@@ -70,7 +72,7 @@ def main():
 
     output_train = open('train_acc.txt', 'wb')
     output_test = open('test_acc.txt', 'wb')
-
+    y_validate = []
     for i in range(k):
         test_seq = k_fold_sequence[i]
         train_seq = []
@@ -81,33 +83,26 @@ def main():
         nc = NC(input_size=raw_data_size, n_classes=n_classes, raw_feature_dim=n_feat)
         xtrain = x[train_seq]
         ytrain = y[train_seq]
-        nc.fit([xtrain,xtrain,xtrain], ytrain)
+        nc.fit([xtrain,xtrain], ytrain)
 
-        eval_train_result = nc.evaluation([xtrain,xtrain,xtrain], ytrain)
+        eval_train_result = nc.evaluation([xtrain,xtrain], ytrain)
         print(eval_train_result)
         print>>output_train,[k,eval_train_result]
         xtest = x[test_seq]
         ytest = y[test_seq]
-        eval_test_result = nc.evaluation([xtest,xtest,xtest], ytest)
+        eval_test_result = nc.evaluation([xtest,xtest], ytest)
         print(eval_test_result)
         print>>output_test, [k, eval_test_result]
 
+        y_validate_k = nc.predict(x_validate)
+        y_validate_k = y_validate_k.argmax(axis=1)
 
-
-
-        # model_name_path = 'myNovelCNN.pickle'
-        # print("saving model...")
-        # nc.save_ncnn_model(model_name_path)
-
-        # ytrain_pred = nc.predict(xtrain)
-        # res_train = np.concatenate((ytrain_pred, ytrain), axis=1)
-        # np.savetxt('rest_train.txt', res_train, fmt='%1.2f')
-        #
-        # ytest_pred = nc.predict(x[test_seq])
-        # res_test = np.concatenate((ytest_pred, y[test_seq]), axis=1)
-        # np.savetxt('rest_test.txt', res_test, fmt='%1.2f')
+        y_validate.append(y_validate_k)
     print>>output_train,{'average', np.mean(eval_train_result, axis=0)}
     print>>output_test, {'average', np.mean(eval_test_result, axis=0)}
+
+    y_validate_file_path = 'ytest.txt'
+    np.savetxt(fname=y_validate_file_path, X=np.asarray(y_validate_k), fmt='%1.2f')
 
 if __name__ == "__main__":
 
@@ -121,6 +116,10 @@ if __name__ == "__main__":
     train_file_path = str(Path().resolve().parent) + '/Offline-Challenge/xtrain_obfuscated.txt'
     with open(train_file_path,'r') as raw_data_file:
         raw_data = read_raw_data(raw_data_file)
+
+    validate_file_path = str(Path().resolve().paren) + '/Offline-Challenge/xtest_obfuscated.txt'
+    with open(validate_file_path, 'r') as validate_raw_file:
+        validate_raw = read_raw_data(validate_raw_file)
 
     x_one_hot, text_length = PrepareData.prepare_data(raw_data, char_dic, one_hot_feature_dim)
 

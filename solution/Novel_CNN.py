@@ -1,7 +1,8 @@
+from keras.callbacks import EarlyStopping
 from keras.models import Sequential
 from keras.models import save_model
 from keras.models import load_model
-from keras.layers import Dense, Merge
+from keras.layers import Dense, Merge, regularizers
 from keras.layers import Dropout
 from keras.layers import Flatten
 from keras.constraints import maxnorm
@@ -17,18 +18,18 @@ class NovelCnn:
         self._epochs = epochs
 
         NB_FILTER = [64, 128]
-        Parallel_N_GRAM = [3, 4, 5]
+        Parallel_N_GRAM = [ 4, 5]
         NB_GRAM = [4, 3, 3]
         FULLY_CONNECTED_UNIT = 256
-        DROPOUT = [0.5, 0.5]
+        DROPOUT = [0.7, 0.7]
 
         model_blocks = []
 
         for n_g in Parallel_N_GRAM:
             seq_model = Sequential()
-            seq_model.add(Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu'))
+            seq_model.add(Conv2D(NB_FILTER[0], (raw_feature_dim, n_g),input_shape=input_size, border_mode='valid', activation='relu', kernel_regularizer=regularizers.l2(0.01)))
             seq_model.add(MaxPooling2D(pool_size=(1,3)))
-            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]),border_mode='valid', activation='relu'))
+            seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]),border_mode='valid', activation='relu',kernel_regularizer=regularizers.l2(0.01)))
             # seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
             # seq_model.add(Conv2D(NB_FILTER[1], (1, NB_GRAM[2]), border_mode='valid', activation='relu'))
             seq_model.add(MaxPooling2D(pool_size=(1,3)))
@@ -40,8 +41,8 @@ class NovelCnn:
         # model.add(Dropout(DROPOUT[0]))
         # model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
         model.add(Dropout(DROPOUT[1]))
-        model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3)))
-        model.add(Dense(n_classes, activation='softmax'))
+        model.add(Dense(FULLY_CONNECTED_UNIT, activation='relu', W_constraint=maxnorm(3), kernel_regularizer=regularizers.l2(0.01)))
+        model.add(Dense(n_classes, activation='softmax', kernel_regularizer=regularizers.l2(0.01)))
         model.compile(
             loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])
         self._model = model
@@ -91,7 +92,8 @@ class NovelCnn:
         # self._model = conv_parallel
 
     def fit(self, xtrain, ytrain):
-        self._model.fit(xtrain,ytrain,self._batch_size,self._epochs,verbose=1)
+        callback = [EarlyStopping(monitor='val_loss', patience=2)]
+        self._model.fit(xtrain,ytrain,self._batch_size,self._epochs,verbose=1, callbacks=callback)
 
     def predict(self, xvalidate):
         ytest = self._model.predict(xvalidate)
