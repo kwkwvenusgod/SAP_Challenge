@@ -92,7 +92,7 @@ class NovelCnn:
         # self._model = conv_parallel
 
     def fit(self, xtrain, ytrain):
-        callback = [EarlyStopping(monitor='val_loss', patience=2)]
+        callback = [EarlyStopping(monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto')]
         self._model.fit(xtrain,ytrain,self._batch_size,self._epochs,verbose=1, callbacks=callback)
 
     def predict(self, xvalidate):
